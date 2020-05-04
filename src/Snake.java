@@ -1,6 +1,6 @@
 
 import java.awt.Graphics;
-import java.util.List;
+import java.util.*;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -20,7 +20,9 @@ public class Snake {
     
     
     public Snake(int row, int col, int size) { // Initial position of the head of the snake and number of inital nodes
-        // Finish this method
+        body = new ArrayList<Node>();
+        
+                
     }
     
     public boolean canMove(int row, int col) {

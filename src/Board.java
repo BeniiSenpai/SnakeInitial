@@ -14,8 +14,8 @@ import java.util.Timer;
  */
 public class Board extends javax.swing.JPanel {
     
-    private int numRows;
-    private int numCols;
+    private int numRows = 75;
+    private int numCols = 50;
     private Snake snake;
     private Food food;
     private Food specialFood;
@@ -32,7 +32,9 @@ public class Board extends javax.swing.JPanel {
     }
     
     private void myInit() {
-        // Finish this method
+        snake = new Snake(ERROR, ERROR, WIDTH);
+        food = new Food(snake);
+        
     }
     
     public Board(int numRows, int numCols) {

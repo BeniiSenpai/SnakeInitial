@@ -1,5 +1,7 @@
 
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.Timer;
 
 /*
@@ -14,8 +16,8 @@ import java.util.Timer;
  */
 public class Board extends javax.swing.JPanel {
     
-    private int numRows = 75;
-    private int numCols = 50;
+    private static int numRows = 75;
+    private static int numCols = 50;
     private Snake snake;
     private Food food;
     private Food specialFood;
@@ -23,17 +25,44 @@ public class Board extends javax.swing.JPanel {
     private Timer specialFoodTimer;
     private int DeltaTime;
 
+    
+    public static void setNumRows(int numRows) {
+        Board.numRows = numRows;
+    }
+
+    public static void setNumCols(int numCols) {
+        Board.numCols = numCols;
+    }
+
+    public static int getRows(){
+        return numRows;
+    }
+
+    public static int getCols(){
+        return numCols;
+    }
+    
+    public int getSquareWidth() {
+        return getWidth() / Board.getCols();        
+    }
+    
+    public int getSquareHeight() {
+        return getHeight() / Board.getRows();
+    }
+    
+    
     /**
      * Creates new form Board
-     */
+    */
+
     public Board() {
         initComponents();
         myInit();
+        
+        
     }
     
     private void myInit() {
-        snake = new Snake(ERROR, ERROR, WIDTH);
-        food = new Food(snake);
         
     }
     
@@ -53,7 +82,15 @@ public class Board extends javax.swing.JPanel {
     @Override 
     protected void paintComponent(Graphics g)  {
         // Finish this method
-        // Paint the Snake and the food here
+        // Paint the Snake and the food herep
+    }
+    
+    public void paintBoard(Graphics2D g2d) {
+        for (int row = 0; row < getRows(); row++) {
+            for (int col = 0; col <  getCols(); col++) {
+                Util.drawSquare(g2d, row, col, getSquareWidth(), getSquareHeight(), new Color(138, 49, 49));
+            }
+        }
     }
 
     /**

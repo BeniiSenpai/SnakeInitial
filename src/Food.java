@@ -30,8 +30,6 @@ public class Food {
     // Create all the methods you need here
 
     private Node randomPosition(Snake snake) {
-        int random = (int)(Math.random() * 50 + 1);
-        
-        return null;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -2,30 +2,32 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.Timer;
+import java.awt.Toolkit;
+import java.awt.event.*;
+import javax.swing.Timer;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author victoralonso
  */
 public class Board extends javax.swing.JPanel {
-    
-    private static int numRows = 75;
-    private static int numCols = 50;
-    private Snake snake;
-    private Food food;
-    private Food specialFood;
-    private Timer snakeTimer;
-    private Timer specialFoodTimer;
-    private int DeltaTime;
 
-    
+    private Snake snake;
+    private static int numRows = 150;
+    private static int numCols = 150;
+    private ScoreBoardIncrementer scoreBoard;
+
+    /*-------TIMER---------*/
+    private Timer timer;
+    private int deltaTime;
+    public static final int INITIAL_DELTA_TIME = 100000;
+
+    /*========================================================================*/
     public static void setNumRows(int numRows) {
         Board.numRows = numRows;
     }
@@ -34,64 +36,131 @@ public class Board extends javax.swing.JPanel {
         Board.numCols = numCols;
     }
 
-    public static int getRows(){
+    public static int getRows() {
         return numRows;
     }
 
-    public static int getCols(){
+    public static int getCols() {
         return numCols;
     }
-    
+
     public int getSquareWidth() {
-        return getWidth() / Board.getCols();        
+        return (int) (getWidth() / Board.getCols());
     }
-    
+
     public int getSquareHeight() {
-        return getHeight() / Board.getRows();
+        return (int) (getHeight() / Board.getRows());
     }
-    
-    
-    /**
-     * Creates new form Board
-    */
+
+    /*========================================================================*/
+    public Board(ScoreBoardIncrementer inc) {
+        this();
+        scoreBoard = inc;
+    }
 
     public Board() {
         initComponents();
         myInit();
-        
-        
+        deltaTime = INITIAL_DELTA_TIME;
+
+
     }
-    
-    private void myInit() {
-        
-    }
-    
+
     public Board(int numRows, int numCols) {
-        // Finish this method
+        this.numRows = numRows;
+        this.numCols = numCols;
+        
+        
     }
-    
+
+    private void myInit() {
+        snake = new Snake(5, 5, 3);
+        
+        MyKeyAdapter keyAdapter = new MyKeyAdapter();
+        addKeyListener(keyAdapter);
+        
+        createTime();
+        setFocusable(true);
+        
+        
+        timer.start();
+
+    }
+
+    private void createTime() {
+        timer = new Timer(deltaTime, new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                snake.move();
+                repaint();
+                Toolkit.getDefaultToolkit().sync();
+
+            }
+
+        });
+
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        paintBoard((Graphics2D) g);
+        snake.paint(g, getSquareWidth(), getSquareHeight());
+    }
+
+    public void paintBoard(Graphics2D g2d) {
+        for (int row = 0; row < getRows(); row++) {
+            for (int col = 0; col < getCols(); col++) {
+                Util.drawSquare(g2d, row, col, getSquareWidth(), getSquareHeight(), new Color(138, 49, 49));
+
+            }
+        }
+    }
+
     public boolean colideFood() {
         // Finish this method
         return false;
     }
-    
+
     public void gameOver() {
         // Finish this method
     }
-    
-    @Override 
-    protected void paintComponent(Graphics g)  {
-        // Finish this method
-        // Paint the Snake and the food herep
-    }
-    
-    public void paintBoard(Graphics2D g2d) {
-        for (int row = 0; row < getRows(); row++) {
-            for (int col = 0; col <  getCols(); col++) {
-                Util.drawSquare(g2d, row, col, getSquareWidth(), getSquareHeight(), new Color(138, 49, 49));
+
+    /*========================================================================*/
+    class MyKeyAdapter extends KeyAdapter {
+
+        @Override
+        public void keyPressed(KeyEvent ev) {
+            switch (ev.getKeyCode()) {
+                case KeyEvent.VK_LEFT:
+                    if (snake.getDirection() != Direction.RIGHT) {
+                        snake.setDirection(Direction.LEFT);
+                    }
+                    break;
+                case KeyEvent.VK_RIGHT:
+                    if (snake.getDirection() != Direction.LEFT) {
+                        snake.setDirection(Direction.RIGHT);
+                    }
+                    break;
+                case KeyEvent.VK_UP:
+                    if (snake.getDirection() != Direction.DOWN) {
+                        snake.setDirection(Direction.UP);
+                    }
+                    break;
+                case KeyEvent.VK_DOWN:
+                    if (snake.getDirection() != Direction.UP) {
+                        snake.setDirection(Direction.DOWN);
+                    }
+                    break;
+                default:
+                    break;
             }
+            repaint();
         }
     }
+
+    /*========================================================================*/
 
     /**
      * This method is called from within the constructor to initialize the form.

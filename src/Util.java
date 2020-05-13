@@ -12,7 +12,6 @@ import java.awt.*;
  * @author victoralonso
  */
 public class Util {
-    
     public static void drawSquare(Graphics g, int row, int col, int squareWidth, int squareHeight, Color color) {
         int x = col * squareWidth;
         int y = row * squareHeight;

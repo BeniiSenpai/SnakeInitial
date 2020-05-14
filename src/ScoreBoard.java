@@ -1,3 +1,7 @@
+
+import java.awt.Color;
+import java.awt.Font;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -13,6 +17,7 @@ public class ScoreBoard extends javax.swing.JPanel implements ScoreBoardIncremen
      * Creates new form ScoreBoard
      */
     public ScoreBoard() {
+        this.setBackground(new Color(160, 0, 70));
         initComponents();
         score = 0;
         incrementScore(0);
@@ -20,7 +25,9 @@ public class ScoreBoard extends javax.swing.JPanel implements ScoreBoardIncremen
 
     public void incrementScore(int increment) {
         score += increment;
-        jLabel1.setText("" + score);
+        jLabel1.setForeground(Color.WHITE);
+        jLabel1.setFont(new Font("consolas", Font.PLAIN,20));
+        jLabel1.setText("Score: " + score);
     }
 
     /**

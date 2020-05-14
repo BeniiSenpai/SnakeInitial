@@ -1,9 +1,11 @@
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.event.*;
+import javax.swing.JFrame;
 import javax.swing.Timer;
 
 public class Board extends javax.swing.JPanel {
@@ -12,7 +14,10 @@ public class Board extends javax.swing.JPanel {
     private Food food;
     public static int numRows = 50;
     public static int numCols = 50;
+    
+    /*-------Atributos ScoreBoard---------*/
     private ScoreBoardIncrementer scoreBoard;
+    private JFrame parent;
 
     /*-------TIMER SNAKE---------*/
     private Timer timer;
@@ -38,11 +43,12 @@ public class Board extends javax.swing.JPanel {
     }
 
     /*========================================================================*/
-    public Board(ScoreBoardIncrementer inc) {
+    
+    public Board(ScoreBoardIncrementer inc,JFrame parent){
         this();
+        this.parent = parent;
         scoreBoard = inc;
     }
-
     public Board() {
         super();
         initComponents();
@@ -56,6 +62,7 @@ public class Board extends javax.swing.JPanel {
 
     private void myInit() {
         this.setBackground(new Color(37, 33, 46 ));
+        this.setMinimumSize(new Dimension(600, 535));
         snake = new Snake(5, 5, 3);
         food = new Food(snake);
         deltaTime = INITIAL_DELTA_TIME;
@@ -77,6 +84,7 @@ public class Board extends javax.swing.JPanel {
                     if (colideFood()) {
                         food = new Food(snake);
                         snake.setRemainingNodesToCreate(1);
+                        scoreBoard.incrementScore(10);
                     }
                     snake.move();
                     repaint();

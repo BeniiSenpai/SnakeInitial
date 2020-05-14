@@ -10,13 +10,13 @@ public class Snake {
     private Direction direction;
     private List<Node> body;
     private int remainingNodesToCreate = 0;
+    
 
     public Snake(int row, int col, int size) { // Initial position of the head of the snake and number of inital nodes
         body = new ArrayList<Node>();
         for (int i = 0; i < size; i++) {
             body.add(new Node((row), (col) - i));
         }
-
         direction = Direction.RIGHT;
     }
 
@@ -40,34 +40,35 @@ public class Snake {
         this.direction = direction;
     }
 
-    public boolean canMove(int row, int col) {
-        if (row < 0 || col < 0 || row >= Board.getRows() || col >= Board.getCols()) {
+    public List<Node> getBody() {
+        return body;
+    }
+    
+    public Node headSnake() {
+        return body.get(0);
+    }
+   
+
+    public boolean canMove() {
+        Node firstNode = body.get(0);
+        Node node;
+        if (firstNode.getCol() < 0 || firstNode.getCol() >= Board.numCols
+                || firstNode.getRow() < 0 || firstNode.getRow() >= Board.numRows) { 
             return false;
-        } else {
-            /*
-            if (colidesWithItSelf()) {
+        } else {  
+            if (colidesWithItSelf(firstNode)) {
                 return false;
             }
-            */
-            move();
             return true;
         }
     }
-    
-    public void remainingNodesToMove(int row, int col){
-        body.add(0, new Node(row, col));
-        if (remainingNodesToCreate == 0) {
-            body.remove(body.size() - 1);
-        } else {
-            remainingNodesToCreate --;
-        }
-        
+
+    public void setRemainingNodesToCreate(int remainingNodesToCreate) {
+        this.remainingNodesToCreate = remainingNodesToCreate;
     }
-    
-    /*
-    private boolean colidesWithItSelf() {
+
+    private boolean colidesWithItSelf(Node firstNode) {
         Node node;
-        Node firstNode = body.get(0);
         for (int i = 1; i < body.size(); i++) {
             node = body.get(i);
             if (node.getCol() == firstNode.getCol() && node.getRow() == firstNode.getRow()) {
@@ -76,7 +77,16 @@ public class Snake {
         }
         return false;
     }
-    */
+
+    public void remainingNodesToMove(int row, int col) {
+        body.add(0, new Node(row, col));
+        if (remainingNodesToCreate == 0) {
+            body.remove(body.size() - 1);
+        } else {
+            remainingNodesToCreate--;
+        }
+
+    }
 
     public void move() {
         int row = body.get(0).getRow();
@@ -95,7 +105,7 @@ public class Snake {
                 remainingNodesToMove(row, col + 1);
                 break;
         }
-        
+
         Toolkit.getDefaultToolkit().sync();
     }
 

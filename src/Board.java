@@ -6,26 +6,19 @@ import java.awt.Toolkit;
 import java.awt.event.*;
 import javax.swing.Timer;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-/**
- *
- * @author victoralonso
- */
 public class Board extends javax.swing.JPanel {
 
     private Snake snake;
-    private static int numRows = 150;
-    private static int numCols = 150;
+    private Food food;
+    public static int numRows = 50;
+    public static int numCols = 50;
     private ScoreBoardIncrementer scoreBoard;
 
-    /*-------TIMER---------*/
+    /*-------TIMER SNAKE---------*/
     private Timer timer;
     private int deltaTime;
-    public static final int INITIAL_DELTA_TIME = 100000;
+    public static final int INITIAL_DELTA_TIME = 50;
+
 
     /*========================================================================*/
     public static void setNumRows(int numRows) {
@@ -36,20 +29,12 @@ public class Board extends javax.swing.JPanel {
         Board.numCols = numCols;
     }
 
-    public static int getRows() {
-        return numRows;
-    }
-
-    public static int getCols() {
-        return numCols;
-    }
-
     public int getSquareWidth() {
-        return (int) (getWidth() / Board.getCols());
+        return (int) (getWidth() / numCols);
     }
 
     public int getSquareHeight() {
-        return (int) (getHeight() / Board.getRows());
+        return (int) (getHeight() / numRows);
     }
 
     /*========================================================================*/
@@ -59,32 +44,28 @@ public class Board extends javax.swing.JPanel {
     }
 
     public Board() {
+        super();
         initComponents();
         myInit();
-        deltaTime = INITIAL_DELTA_TIME;
-
-
     }
 
     public Board(int numRows, int numCols) {
         this.numRows = numRows;
         this.numCols = numCols;
-        
-        
     }
 
     private void myInit() {
+        this.setBackground(new Color(37, 33, 46 ));
         snake = new Snake(5, 5, 3);
-        
+        food = new Food(snake);
+        deltaTime = INITIAL_DELTA_TIME;
         MyKeyAdapter keyAdapter = new MyKeyAdapter();
         addKeyListener(keyAdapter);
-        
+
         createTime();
         setFocusable(true);
-        
-        
-        timer.start();
 
+        timer.start();
     }
 
     private void createTime() {
@@ -92,39 +73,55 @@ public class Board extends javax.swing.JPanel {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
-                snake.move();
-                repaint();
-                Toolkit.getDefaultToolkit().sync();
+                if (!gameOver()) {
+                    if (colideFood()) {
+                        food = new Food(snake);
+                        snake.setRemainingNodesToCreate(1);
+                    }
+                    snake.move();
+                    repaint();
 
+                } else {
+                    timer.stop();
+                }
+                Toolkit.getDefaultToolkit().sync();
             }
 
         });
-
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        paintBoard((Graphics2D) g);
+        //paintBoard((Graphics2D) g);
         snake.paint(g, getSquareWidth(), getSquareHeight());
-    }
+        food.paint(g, getSquareWidth(), getSquareHeight());
 
+    }
+/*
     public void paintBoard(Graphics2D g2d) {
-        for (int row = 0; row < getRows(); row++) {
-            for (int col = 0; col < getCols(); col++) {
+        for (int row = 0; row < numRows; row++) {
+            for (int col = 0; col < numCols; col++) {
                 Util.drawSquare(g2d, row, col, getSquareWidth(), getSquareHeight(), new Color(138, 49, 49));
 
             }
         }
     }
-
+*/
     public boolean colideFood() {
-        // Finish this method
+        if (snake.headSnake().getRow() == food.getPosition().getRow()
+                && snake.headSnake().getCol() == food.getPosition().getCol()) {
+            return true;
+        }
         return false;
     }
 
-    public void gameOver() {
-        // Finish this method
+    public boolean gameOver() {
+        if (!snake.canMove()) {
+            return true;
+
+        }
+        return false;
     }
 
     /*========================================================================*/
@@ -161,7 +158,6 @@ public class Board extends javax.swing.JPanel {
     }
 
     /*========================================================================*/
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
